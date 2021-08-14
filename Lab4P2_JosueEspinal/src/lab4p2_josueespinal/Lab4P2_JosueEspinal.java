@@ -3,11 +3,11 @@ package lab4p2_josueespinal;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Lab4P2_JosueEspinal {
+public class Lab4P2_JosueEspinal extends myException {
 
     static ArrayList<Vehiculos> v = new ArrayList<Vehiculos>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         int opcion = menu();
         while (opcion != 11) {
@@ -318,7 +318,120 @@ public class Lab4P2_JosueEspinal {
                 }
                 break;
                 case 5: {
+                    int dias = 0;
+                    System.out.println("Que Vehiculo desea verficar: ");
+                    int index = listaCarros();
+                    if (v.get(index) instanceof Combustion) {
+                        dias = 2021 - (v.get(index).getPasajeros() * ((Combustion) v.get(index)).getConsumo()) - (((Combustion) v.get(index)).getAceite() * ((Combustion) v.get(index)).getConsumo());
+                    } else if (v.get(index) instanceof Hibrido) {
+                        dias = 2021 - ((((Hibrido) v.get(index)).getBateria() * v.get(index).getMaletero()) / (v.get(index).getPasajeros()));
+                    } else if (v.get(index) instanceof HibridoEnchufable) {
+                        dias = 2021 - ((v.get(index).getPasajeros() * ((HibridoEnchufable) v.get(index)).getMotores()) + (((HibridoEnchufable) v.get(index)).getKm() / ((HibridoEnchufable) v.get(index)).getRemolque()));
+                    } else if (v.get(index) instanceof Electrico) {
+                        dias = 2021 - (((Electrico) v.get(index)).getBaterias() + (((Electrico) v.get(index)).getCarga() * v.get(index).getPasajeros() / ((Electrico) v.get(index)).getAceleracion()));
+                    }
+                    boolean validacion = true;
 
+                    try {
+                        if (dias < 30) {
+                            validacion = false;
+                            throw new myException("\nERROR: El vehiculo tiene " + dias + " dias. El minimo es 30.  PORFAVOR EFECTUE CAMBIOS:");
+                        }
+                    } catch (myException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    while (validacion == false) {
+                        if (v.get(index) instanceof Combustion) {
+                            System.out.print("Modelo: ");
+                            v.get(index).setModelo(sc.next());
+                            System.out.print("VIN: ");
+                            v.get(index).setVIN(sc.nextInt());
+                            System.out.print("Carroceria: ");
+                            v.get(index).setCarroceria(sc.next());
+                            System.out.print("Cantidad de Pasajeros: ");
+                            v.get(index).setPasajeros(sc.nextInt());
+                            System.out.print("Capacidad del Maletero (en litros): ");
+                            v.get(index).setMaletero(sc.nextInt());
+                            System.out.print("Consumo de combustiblee (en kilómetro por litro): ");
+                            ((Combustion) v.get(index)).setConsumo(sc.nextInt());
+                            System.out.print("Duración del aceite (en meses): ");
+                            ((Combustion) v.get(index)).setAceite(sc.nextInt());
+                            System.out.print("Velocidad máxima: ");
+                            ((Combustion) v.get(index)).setVelocidad(sc.nextInt());
+                            System.out.print("Tipo de cambio (automático o manual): ");
+                            ((Combustion) v.get(index)).setCambio(sc.next());
+                            dias = 2021 - (v.get(index).getPasajeros() * ((Combustion) v.get(index)).getConsumo()) - (((Combustion) v.get(index)).getAceite() * ((Combustion) v.get(index)).getConsumo());
+                        } else if (v.get(index) instanceof Hibrido) {
+                            System.out.print("Modelo: ");
+                            v.get(index).setModelo(sc.next());
+                            System.out.print("VIN: ");
+                            v.get(index).setVIN(sc.nextInt());
+                            System.out.print("Carroceria: ");
+                            v.get(index).setCarroceria(sc.next());
+                            System.out.print("Cantidad de Pasajeros: ");
+                            v.get(index).setPasajeros(sc.nextInt());
+                            System.out.print("Capacidad del Maletero (en litros): ");
+                            v.get(index).setMaletero(sc.nextInt());
+                            System.out.print("Capacidad de la batería (en kilowatt por hora): ");
+                            ((Hibrido) v.get(index)).setBateria(sc.nextInt());
+                            System.out.print("Capacidad del motor eléctrico (en kilowatt): ");
+                            ((Hibrido) v.get(index)).setMotor(sc.nextInt());
+                            dias = 2021 - ((((Hibrido) v.get(index)).getBateria() * v.get(index).getMaletero()) / (v.get(index).getPasajeros()));
+                        } else if (v.get(index) instanceof HibridoEnchufable) {
+                            System.out.print("Modelo: ");
+                            v.get(index).setModelo(sc.next());
+                            System.out.print("VIN: ");
+                            v.get(index).setVIN(sc.nextInt());
+                            System.out.print("Carroceria: ");
+                            v.get(index).setCarroceria(sc.next());
+                            System.out.print("Cantidad de Pasajeros: ");
+                            v.get(index).setPasajeros(sc.nextInt());
+                            System.out.print("Capacidad del Maletero (en litros): ");
+                            v.get(index).setMaletero(sc.nextInt());
+                            System.out.print("Cantidad de kilómetros en modo eléctrico: ");
+                            ((HibridoEnchufable) v.get(index)).setKm(sc.nextInt());
+                            System.out.print("Cantidad de motores eléctricos: ");
+                            ((HibridoEnchufable) v.get(index)).setMotores(sc.nextInt());
+                            System.out.print("Capacidad de remolque (en toneladas): ");
+                            ((HibridoEnchufable) v.get(index)).setRemolque(sc.nextInt());
+                            System.out.print("Es 4x4 [S/N]: ");
+                            ((HibridoEnchufable) v.get(index)).setWheel(siONo());
+                            dias = 2021 - ((v.get(index).getPasajeros() * ((HibridoEnchufable) v.get(index)).getMotores()) + (((HibridoEnchufable) v.get(index)).getKm() / ((HibridoEnchufable) v.get(index)).getRemolque()));
+                        } else if (v.get(index) instanceof Electrico) {
+                            System.out.print("Modelo: ");
+                            v.get(index).setModelo(sc.next());
+                            System.out.print("VIN: ");
+                            v.get(index).setVIN(sc.nextInt());
+                            System.out.print("Carroceria: ");
+                            v.get(index).setCarroceria(sc.next());
+                            System.out.print("Cantidad de Pasajeros: ");
+                            v.get(index).setPasajeros(sc.nextInt());
+                            System.out.print("Capacidad del Maletero (en litros): ");
+                            v.get(index).setMaletero(sc.nextInt());
+                            System.out.print("Cantidad de kilómetros que puede recorrer (autonomía): ");
+                            ((Electrico) v.get(index)).setKm(sc.nextInt());
+                            System.out.print("Cantidad de baterías que almacena: ");
+                            ((Electrico) v.get(index)).setBaterias(sc.nextInt());
+                            System.out.print("Aceleración de 0-100 (en segundos) : ");
+                            ((Electrico) v.get(index)).setAceleracion(sc.nextInt());
+                            System.out.print("Tiempo que dura una carga completa (en minutos): ");
+                            ((Electrico) v.get(index)).setCarga(sc.nextInt());
+                            dias = 2021 - (((Electrico) v.get(index)).getBaterias() + (((Electrico) v.get(index)).getCarga() * v.get(index).getPasajeros() / ((Electrico) v.get(index)).getAceleracion()));
+                        }
+                        try {
+                            if (dias < 30) {
+                                validacion = false;
+                                throw new myException("\nERROR: El vehiculo tiene " + dias + " dias. Sigue teniendo menos del minimo de 30. PORFAVOR EFECTUE CAMBIOS:");
+                            }else{
+                                validacion = true;
+                            }
+                        } catch (myException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                    System.out.println();
+                    System.out.println("Este vehiculo tiene " + dias + " dias en los cuales no presentara ningun fallo. Se puede vender!");
                 }
                 break;
                 case 6: {
